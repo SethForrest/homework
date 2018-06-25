@@ -25,11 +25,11 @@ function PopulateTable(props){
   }).eachPage(function page(records, fetchNextPage) {
       records.forEach(function(record) {
         var task = new Task(record.get('Title'), record.get('Status'), record.get('Priority'), record.get('Due Date'), record.get('ID'));
-        // task_list.push( task);
+        task_list.push( JSON.stringify(task) );
 
 
-        console.log(task);
-        task_list = RenderList(task);
+        // console.log(task);
+        // task_list = RenderList(task);
         // console.log(task_list);
 
 
@@ -38,67 +38,53 @@ function PopulateTable(props){
   }, function done(err) {
       if (err) { console.error(err); return "error"; }
   });
-  // console.log(task_list);
-  return (
-    <ul> {task_list} </ul>
-  );
+  console.log(task_list);
+  return (task_list);
 }
 
 
 
-function RenderList(task){
-  // console.log("RenderList tasks:", props);
 
-  return(<li> {
-    task.title
-  } </li>);
+
+function RenderList(props){
+  var tasks = props.list;
+  console.log("props:",props );
+  console.log("tasks:",tasks );
+  const listItems=[];
+  // const listItems = tasks.map(
+  //   (taskr) => <ListItem key={tasks.id} value={tasks.title} here />
+  // );
+  console.log("this",tasks.title);
+  for (var i=0; i<tasks.length; i++) {
+    console.log("this",tasks[i]);
+    // if(tasks.hasOwnProperty(i)) {
+    //   listItems.push(i);
+    // }
+  }
+  console.log("list:",listItems);
+  return(<ul> {listItems} </ul>);
 }
 
 
-
-// function RenderList(props){
-//   var tasks = props.list;
-//   console.log("props:",props );
-//   console.log("tasks:",tasks );
-//   const listItems=[];
-//   // const listItems = tasks.map(
-//   //   (taskr) => <ListItem key={tasks.id} value={tasks.title} here />
-//   // );
-//   console.log("this",tasks.title);
-//   for (var i=0; i<tasks.length; i++) {
-//     console.log("this",tasks[i]);
-//     // if(tasks.hasOwnProperty(i)) {
-//     //   listItems.push(i);
-//     // }
-//   }
-//   console.log("list:",listItems);
-//   return(<ul> {listItems} </ul>);
-// }
+function ListItem(props) {
+console.log("LI props:",props);
+  return (<li>{props.value}</li>);
+}
 
 
-// function ListItem(props) {
-// console.log("LI props:",props);
-//   return (<li>{props.value}</li>);
-// }
+  function NumberList(props) {
+    const numbers = props.numbers;
+    // console.log("props:",props);
+    // console.log("numbers:",numbers);
+    const listItems = numbers.map(
+      (number) => <ListItem key={number.toString()} value={number} />
+    );
+    // console.log("Num list:",listItems);
+    return ( <ul> {listItems} </ul> );
+  }
 
-
-//   function NumberList(props) {
-//     const numbers = props.numbers;
-//     // console.log("props:",props);
-//     // console.log("numbers:",numbers);
-//     const listItems = numbers.map(
-//       (number) => <ListItem key={number.toString()} value={number} />
-//     );
-//     // console.log("Num list:",listItems);
-//     return ( <ul> {listItems} </ul> );
-//   }
-//
-// const numbers = [1,3,4,2,5, 'car'];
-// const tasks = populateTable();
-
-
-// <NumberList numbers={numbers} />
-// <RenderList list={tasks} />
+const numbers = [1,3,4,2,5, 'car'];
+const tasks = PopulateTable();
 
 
 
@@ -111,7 +97,8 @@ class App extends Component {
           <h1 className="App-title">Welcome to React</h1>
         </header>
         <div>
-          <PopulateTable />
+        <NumberList numbers={numbers} />
+        <RenderList list={tasks} />
         </div>
       </div>
     );
