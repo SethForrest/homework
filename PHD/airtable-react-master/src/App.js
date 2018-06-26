@@ -1,5 +1,6 @@
 import React from 'react';
 import logo from './logo.svg';
+import trash from './trash.svg';
 import './App.css';
 import './slant.css';
 import 'whatwg-fetch';
@@ -11,20 +12,33 @@ const request = new Request(
 )
 
 function getDotColor(priority){
-  if(priority == 'high'){
-    return ({'background-color': 'red'})
-  } else if (priority == 'medium') {
-    return ({'background-color': 'orange'})
-  } else if (priority == 'low') {
-    return ({'background-color': 'green'})
+  if(priority === 'high'){
+    return ({'backgroundColor': 'red'})
+  } else if (priority === 'medium') {
+    return ({'backgroundColor': 'orange'})
+  } else if (priority === 'low') {
+    return ({'backgroundColor': 'green'})
   }
 }
+
+
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = { records: [] };
     this.fetchAirtable = this.fetchAirtable.bind(this);
+    this.deleteItem = this.deleteItem.bind(this);
+    this.checkOff = this.checkOff.bind(this);
+  }
+
+
+  deleteItem(){
+    console.log("trash");
+  }
+
+  checkOff(){
+    console.log("check off");
   }
 
   async componentDidMount() {
@@ -35,12 +49,9 @@ class App extends React.Component {
     var resp = await fetch(request).then(
       results => { return results; }
     )
-    console.log("resp:",request)
     if(resp.status >= 200 && resp.status < 300) {
       var json = await resp.json()
-      console.log("json:",json)
       const {records} = json;
-      setTimeout(console.log({records}), 500)
       this.setState({records});
     }
   }
@@ -55,15 +66,29 @@ class App extends React.Component {
         </div>
 
         <div id="task-list">
+          <div className="task-header">
+            test
+          </div>
           {records.map(record =>
             <ul  id="tasks" key={record.id}>
-              <div id="title"> { record.fields["Title"] }  </div>
-              <div id="priority">
+              <div id="title" className="task-field">
+                <input type="checkbox" id="myCheck" onClick={this.checkOff} />
+                { record.fields["Title"] }
+              </div>
+
+              <div id="priority" className="task-field">
                 <div id="dot" style={getDotColor(record.fields["Priority"])} />
                 { record.fields["Priority"] }
               </div>
-              <div id="status"> { record.fields["Status"] }   </div>
-              <div id="due"> { record.fields["Due Date"] }  </div>
+
+              <div id="status" className="task-field">
+                { record.fields["Status"] }
+              </div>
+
+              <div id="due" className="task-field">
+                { record.fields["Due Date"] }
+                <img src={trash} className="trashcan" alt="trash" onClick={this.deleteItem} />
+              </div>
             </ul>
           )}
         </div>
