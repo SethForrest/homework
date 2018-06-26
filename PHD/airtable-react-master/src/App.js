@@ -19,18 +19,20 @@ var Airtable = require('airtable');
 var base = new Airtable({apiKey: config.apiKey}).base(config.base);
 
 
-
-
 const request = new Request(
-  base('my_table').select({
-    sort: [ {field: "Due Date", direction: "desc"} ]
-  }).firstPage(function(err, records) {
-    if (err) { console.error(err); return; }
-    records.forEach( function(record) {
-      console.log('Retrieved', record.get('Title'));
-    });
-  })
+  'https://api.airtable.com/v0/appu8NbYxVqw4YYCp/my_table?api_key=keyMOlSfRbXyRr9Uz'
 )
+
+// var request = new Request(
+//   base('my_table').select({
+//     sort: [ {field: "Due Date", direction: "desc"} ]
+//   }).firstPage(function(err, records) {
+//     if (err) { console.error(err); return; }
+//     records.forEach( function(record) {
+//       // console.log('Retrieved', record.get('Title'));
+//     });
+//   })
+// )
 
 // const request = new Request( `https://api.airtable.com/v0/${config.base}/${config.table}?maxRecords=${config.maxRecords}&view=${config.view}`, {
 //   method: 'get',
@@ -54,13 +56,13 @@ class App extends React.Component {
     var resp = await fetch(request).then(
       results => { return results; }
     )
-    console.log(resp)
+    console.log("resp:",request)
     if(resp.status >= 200 && resp.status < 300) {
-      var json = await resp
-      // console.log(json)
+      var json = await resp.json()
+      console.log("json:",json)
       const {records} = json;
-      console.log({records})
-      // this.setState({ records });
+      setTimeout(console.log({records}), 500)
+      this.setState({records});
     }
   }
 
