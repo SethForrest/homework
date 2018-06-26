@@ -1,3 +1,13 @@
+body{
+  /* Most of these come from diamandis.com */
+  background-color: #09427B;
+  color: #fff;
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size: 16px;
+  line-height: 1.2;
+  font-weight: 400;
+}
+
 .App {
   text-align: center;
 }
@@ -12,11 +22,62 @@
   height: 150px;
   padding: 20px;
   color: white;
-  margin-bottom: 2em;
+  margin-bottom: .3em;
 }
 
 .App-intro {
   font-size: large;
+}
+
+#task-list{
+  align: center;
+  min-width: 400px;
+  max-width: 850px;
+  padding: 0px 10px 10px 10px;
+  margin-top: 0px;
+}
+
+#tasks {
+  color: black;
+  background-color: white;
+  border-style: solid;
+  border-radius: 10px;
+  border-color: black;
+  max-height: 30px;
+  padding: 5px;
+  margin: -3px 10px;
+}
+
+#title {
+  text-align: left;
+  display:inline-block;
+  width: 25%;
+}
+
+
+#dot {
+    height: 12px;
+    width: 12px;
+    background-color: gray;
+    border-radius: 50%;
+    display: inline-block;
+    margin: auto 5px auto 0px;
+}
+
+#priority {
+  text-align: left;
+  display:inline-block;
+  width: 25%;
+}
+
+#status {
+  display:inline-block;
+  width: 25%;
+}
+
+#due {
+  display:inline-block;
+  width: 25%;
 }
 
 @keyframes App-logo-spin {

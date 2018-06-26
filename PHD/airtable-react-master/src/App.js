@@ -3,43 +3,22 @@ import logo from './logo.svg';
 import './App.css';
 import './slant.css';
 import 'whatwg-fetch';
-// require('env2')('.env');
 
-// Add environmental vars to .env
-// Find them at: https://airtable.com/api
-// Base looks like appsDmF4srKVAXHqp
-// The default view is Main%20View (unless renamed)
-
-const config = {
-  base: 'appu8NbYxVqw4YYCp',
-  apiKey: 'keyMOlSfRbXyRr9Uz',
-}
-
-var Airtable = require('airtable');
-var base = new Airtable({apiKey: config.apiKey}).base(config.base);
 
 
 const request = new Request(
   'https://api.airtable.com/v0/appu8NbYxVqw4YYCp/my_table?api_key=keyMOlSfRbXyRr9Uz'
 )
 
-// var request = new Request(
-//   base('my_table').select({
-//     sort: [ {field: "Due Date", direction: "desc"} ]
-//   }).firstPage(function(err, records) {
-//     if (err) { console.error(err); return; }
-//     records.forEach( function(record) {
-//       // console.log('Retrieved', record.get('Title'));
-//     });
-//   })
-// )
-
-// const request = new Request( `https://api.airtable.com/v0/${config.base}/${config.table}?maxRecords=${config.maxRecords}&view=${config.view}`, {
-//   method: 'get',
-//   headers: new Headers({
-//     'Authorization': `Bearer ${config.apiKey}`
-//   })
-// });
+function getDotColor(priority){
+  if(priority == 'high'){
+    return ({'background-color': 'red'})
+  } else if (priority == 'medium') {
+    return ({'background-color': 'orange'})
+  } else if (priority == 'low') {
+    return ({'background-color': 'green'})
+  }
+}
 
 class App extends React.Component {
   constructor(props) {
@@ -72,13 +51,21 @@ class App extends React.Component {
       <div className="App">
         <div className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
-          <h2>F this Business</h2>
+          <h1>Making Progress</h1>
         </div>
 
-        <div>
-        {records.map(record =>
-          <p>{JSON.stringify(record)}</p>
-        )}
+        <div id="task-list">
+          {records.map(record =>
+            <ul  id="tasks" key={record.id}>
+              <div id="title"> { record.fields["Title"] }  </div>
+              <div id="priority">
+                <div id="dot" style={getDotColor(record.fields["Priority"])} />
+                { record.fields["Priority"] }
+              </div>
+              <div id="status"> { record.fields["Status"] }   </div>
+              <div id="due"> { record.fields["Due Date"] }  </div>
+            </ul>
+          )}
         </div>
       </div>
     );
