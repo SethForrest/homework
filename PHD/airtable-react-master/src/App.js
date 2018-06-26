@@ -6,14 +6,17 @@ import './slant.css';
 import 'whatwg-fetch';
 
 
+const table = 'my_table';
+var Airtable = require('airtable');
+var base = new Airtable({apiKey: 'keyMOlSfRbXyRr9Uz' }).base('appu8NbYxVqw4YYCp');
 
-const request = new Request(
-  'https://api.airtable.com/v0/appu8NbYxVqw4YYCp/my_table?api_key=keyMOlSfRbXyRr9Uz'
-)
+// console.log(
+//   base(table).select().all()
+// )
 
 function getDotColor(priority){
   if(priority === 'high'){
-    return ({'backgroundColor': 'red'})
+    return ({'backgroundColor': 'red'} )
   } else if (priority === 'medium') {
     return ({'backgroundColor': 'orange'})
   } else if (priority === 'low') {
@@ -21,39 +24,63 @@ function getDotColor(priority){
   }
 }
 
+function getChecked(status){
+  if(status === 'complete'){
+    return true
+  } else {
+    return false
+  }
+}
 
 
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { records: [] };
+    this.state = {
+      records: []
+    };
     this.fetchAirtable = this.fetchAirtable.bind(this);
-    this.deleteItem = this.deleteItem.bind(this);
-    this.checkOff = this.checkOff.bind(this);
+    this.deleteItem = this.deleteItem.bind(props);
+    this.checkOff = this.checkOff.bind(props);
   }
 
 
-  deleteItem(){
-    console.log("trash");
+
+  deleteItem(record){
+    console.log("Trashing", record.fields["Title"]);
+    console.log("Deleting not required");
+    // base(table).destroy(record.id, (err, deletedRecord) => {
+    //   if (err) { console.error(err);  return  }
+    // })
+
+    // base(table).replace()
   }
 
-  checkOff(){
-    console.log("check off");
+  checkOff(record){
+    // console.log(this.state.records)
+    var newStatus;
+    console.log("Toggleing", record.fields["Title"]);
+    if(record.fields["Status"] === "complete") {newStatus = "in progress"}
+    else { newStatus = "complete" }
+    record = base(table).update( record.id, {"Status": newStatus} )
+      .then( r => {return r});
+    // console.log({record});
+    // (e) => this.fetchAirtable(e)
   }
+
+  // componentWillMount(){
+  //
+  // }
 
   async componentDidMount() {
     await this.fetchAirtable()
   }
 
   async fetchAirtable() {
-    var resp = await fetch(request).then(
-      results => { return results; }
-    )
-    if(resp.status >= 200 && resp.status < 300) {
-      var json = await resp.json()
-      const {records} = json;
-      this.setState({records});
-    }
+    const records = await base(table).select().all()
+      .then( r => {return r})
+    // console.log("json:",records)
+    this.setState({records});
   }
 
   render() {
@@ -67,12 +94,16 @@ class App extends React.Component {
 
         <div id="task-list">
           <div className="task-header">
-            test
+            <h3> test </h3>
           </div>
           {records.map(record =>
-            <ul  id="tasks" key={record.id}>
+            <ul  id="tasks" key={record.id}
+              style={record.fields["Status"] === "complete" ? {'backgroundColor': 'gray'} : {'backgroundColor': 'white'}}
+            >
               <div id="title" className="task-field">
-                <input type="checkbox" id="myCheck" onClick={this.checkOff} />
+                <input type="checkbox" id="check"
+                  onClick={(e) => this.checkOff(record, e)}
+                  defaultChecked={getChecked(record.fields["Status"])} />
                 { record.fields["Title"] }
               </div>
 
@@ -81,13 +112,13 @@ class App extends React.Component {
                 { record.fields["Priority"] }
               </div>
 
-              <div id="status" className="task-field">
-                { record.fields["Status"] }
-              </div>
-
               <div id="due" className="task-field">
                 { record.fields["Due Date"] }
-                <img src={trash} className="trashcan" alt="trash" onClick={this.deleteItem} />
+                <img src={trash}
+                  className="trashcan"
+                  alt="trash"
+                  onClick={(e) => this.deleteItem(record, e)}
+                />
               </div>
             </ul>
           )}

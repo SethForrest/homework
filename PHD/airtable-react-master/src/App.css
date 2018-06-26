@@ -19,7 +19,7 @@ body{
 
 .trashcan{
   height: 15px;
-  padding: 0px 15px;
+  padding: 0px 5px;
 
 }
 
@@ -42,8 +42,8 @@ body{
 }
 
 #task-list{
-  min-width: 590px;
-  max-width: 850px;
+  min-width: 400px;
+  max-width: 700px;
   padding: 10px 0px 5px 10px;
   margin-top: 10px;
   align: center;
@@ -59,16 +59,22 @@ body{
   height: 20px;
   padding: 5px;
   margin: -3px 10px;
+  display: flex;
+  justify-content: space-between;
 }
 
 .task-field{
   display:inline-block;
-  width: 25%;
+  width: 20%;
 }
 
 #title {
   text-align: left;
   min-width: 150px;
+}
+
+#check {
+  margin: auto 10px auto 5px;  
 }
 
 
@@ -78,18 +84,17 @@ body{
     background-color: gray;
     border-radius: 50%;
     display: inline-block;
-    margin: auto 5px auto 0px;
+    margin: auto 5px auto 10px;
 }
 
 #priority {
   text-align: left;
-}
-
-#status {
+  min-width: 85px;
 }
 
 #due {
-  text-align: right;
+  text-align: center;
+  min-width: 110px;
 }
 
 @keyframes App-logo-spin {
