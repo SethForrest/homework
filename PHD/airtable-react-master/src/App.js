@@ -8,7 +8,9 @@ import 'whatwg-fetch';
 
 const table = 'my_table';
 var Airtable = require('airtable');
-var base = new Airtable({apiKey: 'keyMOlSfRbXyRr9Uz' }).base('appu8NbYxVqw4YYCp');
+var base = new Airtable(
+  {apiKey: 'keyMOlSfRbXyRr9Uz' }
+).base('appu8NbYxVqw4YYCp');
 
 // console.log(
 //   base(table).select().all()
@@ -42,6 +44,7 @@ class App extends React.Component {
     this.fetchAirtable = this.fetchAirtable.bind(this);
     this.deleteItem = this.deleteItem.bind(props);
     this.checkOff = this.checkOff.bind(props);
+    this.setState = this.setState.bind(this);
   }
 
 
@@ -57,20 +60,26 @@ class App extends React.Component {
   }
 
   checkOff(record){
-    // console.log(this.state.records)
     var newStatus;
     console.log("Toggleing", record.fields["Title"]);
-    if(record.fields["Status"] === "complete") {newStatus = "in progress"}
-    else { newStatus = "complete" }
-    record = base(table).update( record.id, {"Status": newStatus} )
-      .then( r => {return r});
-    // console.log({record});
-    // (e) => this.fetchAirtable(e)
-  }
 
-  // componentWillMount(){
-  //
-  // }
+
+    // Toggle Status
+    if(record.fields["Status"] === "complete") {
+      newStatus = "in progress";
+    } else {
+      newStatus = "complete";
+    }
+
+
+    // Update Airtable
+    base(table).update( record.id, {"Status": newStatus} )
+      // .then( e => this.setState( {records: e} ) ) })
+    // console.log( record.fields.Status = newStatus )
+
+    // this.setState( {record.fields.Status: 'complete'} )
+    // console.log( record )
+  }
 
   async componentDidMount() {
     await this.fetchAirtable()
@@ -79,7 +88,7 @@ class App extends React.Component {
   async fetchAirtable() {
     const records = await base(table).select().all()
       .then( r => {return r})
-    // console.log("json:",records)
+      // console.log({records})
     this.setState({records});
   }
 
@@ -94,8 +103,12 @@ class App extends React.Component {
 
         <div id="task-list">
           <div className="task-header">
-            <h3> test </h3>
+            <div className="hdrBlk"> <h3> Task </h3> </div>
+            <div className="hdrBlk">  <h3> Priority </h3> </div>
+            <div className="hdrBlk">  <h3> Due Date </h3> </div>
           </div>
+
+
           {records.map(record =>
             <ul  id="tasks" key={record.id}
               style={record.fields["Status"] === "complete" ? {'backgroundColor': 'gray'} : {'backgroundColor': 'white'}}
@@ -122,6 +135,8 @@ class App extends React.Component {
               </div>
             </ul>
           )}
+
+
         </div>
       </div>
     );

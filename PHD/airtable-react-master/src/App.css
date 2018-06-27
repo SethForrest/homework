@@ -36,6 +36,7 @@ body{
 .App-intro {
   font-size: large;
 }
+
 .task-header{
   font-size: large;
   color: black;
@@ -63,6 +64,11 @@ body{
   justify-content: space-between;
 }
 
+.hdrBlk{
+  display:inline-block;
+  width: 20%;
+}
+
 .task-field{
   display:inline-block;
   width: 20%;
@@ -74,7 +80,7 @@ body{
 }
 
 #check {
-  margin: auto 10px auto 5px;  
+  margin: auto 10px auto 5px;
 }
 
 
