@@ -22,8 +22,6 @@ body{
   padding: 0px 5px;
 }
 
-
-
 .App-header {
   background-color: #222;
   height: 150px;
@@ -37,8 +35,6 @@ body{
 .App-intro {
   font-size: large;
 }
-
-
 
 
 .top-bar{
@@ -96,8 +92,6 @@ body{
     from {opacity: 0;}
     to {opacity:1 ;}
 }
-
-
 
 
 .search-bar{
@@ -176,13 +170,12 @@ body{
 
 #title {
   text-align: left;
-  min-width: 150px;
+  min-width: 250px;
 }
 
 #check {
   margin: auto 10px auto 5px;
 }
-
 
 #dot {
     height: 12px;

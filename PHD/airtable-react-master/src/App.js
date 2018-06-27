@@ -52,7 +52,6 @@ class App extends React.Component {
     this.fetchAirtable = this.fetchAirtable.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleSubmit = this.searchFunc.bind(this);
     this.deleteItem = this.deleteItem.bind(props);
     this.checkOff = this.checkOff.bind(props);
     this.setState = this.setState.bind(this);
@@ -80,7 +79,7 @@ class App extends React.Component {
   handleChange(event) {
     const log = event.target;
     tempRec[log.name] = log.value;
-    console.log(tempRec)
+    // console.log(tempRec)
   };
 
   handleSubmit(event) {
@@ -99,26 +98,26 @@ class App extends React.Component {
     this.fetchAirtable()
   }
 
-  async searchFunc(event){
-    console.log('Filtering', event)
+  async searchFunc(param){
+    console.log('Filtering', param)
     var records = []
-    if( event === "Title" || event === "Priority" || event === "DueDate"){
+
+    if( param === "Title" || param === "Priority" || param === "DueDate"){
       var dir;
       if(taskTog === 0){dir = "desc"} else{ dir = "asc"}
       records = await base(table).select({
-          sort: [{field: event, direction: dir }]
+          sort: [{field: param, direction: dir }]
         }).all().then( r => {return r})
       taskTog = (taskTog+1)%2
-    } else {
+    }
+    else {
     records = await base(table).select({
-          filterByFormula: event
+          filterByFormula: "{Title} = 's'"
         }).all().then( r => {return r})
     }
     console.log({records})
     await this.setState({records});
   }
-
-
 
 
   async deleteItem(record){
@@ -166,11 +165,13 @@ class App extends React.Component {
         <div id="task-list">
           <div id="top-bar">
             <div className="clearfix">
-              <input  className="search-bar"
-                      type="text"
-                      onChange={e => this.seearchFunc(e)}
-                      placeholder="Search Task Name.." />
-
+              <form onSubmit = {e => this.searchFunc(e)} >
+                <input  className="search-bar"
+                        type="Text"
+                        name="Title"
+                        onChange={e => this.handleChange(e)}
+                        placeholder="Search Task Name.." />
+                </form>
 
 
               <div className="popup" onClick={e => this.popFunc() } >
@@ -224,8 +225,6 @@ class App extends React.Component {
             </div>
 
 
-
-
           <div className="task-header">
             <div className="hdrBlk" id="Task">  <h3> Task </h3>
               <img src={asc}
@@ -233,12 +232,14 @@ class App extends React.Component {
                 alt="sort"
                 onClick={(e) => { this.searchFunc('Title') } } />
                 </div>
+
               <div className="hdrBlk" id="Priority">  <h3> Priority </h3>
                 <img src={asc}
                   className="sort"
                   alt="sort"
                   onClick={(e) => { this.searchFunc('Priority') } } />
                   </div>
+
               <div className="hdrBlk" id="DueDate">  <h3> Due Date </h3>
                 <img src={asc}
                   className="sort"
@@ -246,9 +247,6 @@ class App extends React.Component {
                   onClick={(e) => { this.searchFunc('DueDate') } } />
                   </div>
             </div>
-
-
-
 
 
           {records.map(record =>
@@ -277,7 +275,6 @@ class App extends React.Component {
                 </div>
               </ul>
             )}
-
 
           </div>
         </div>
