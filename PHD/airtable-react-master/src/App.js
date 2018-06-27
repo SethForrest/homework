@@ -1,6 +1,7 @@
 import React from 'react';
 import logo from './logo.svg';
 import trash from './trash.svg';
+import clipboard from './newTask.svg';
 import './App.css';
 import './slant.css';
 import 'whatwg-fetch';
@@ -44,22 +45,23 @@ class App extends React.Component {
     this.fetchAirtable = this.fetchAirtable.bind(this);
     this.deleteItem = this.deleteItem.bind(props);
     this.checkOff = this.checkOff.bind(props);
-    this.setState = this.setState.bind(this);
+    // this.setState = this.setState.bind(this);
   }
 
 
+  async newTask(){
+    console.log('Making Task')
+    window.prompt("sometext","Task Name")
+  }
 
-  deleteItem(record){
+  async deleteItem(record){
     console.log("Trashing", record.fields["Title"]);
-    console.log("Deleting not required");
-    // base(table).destroy(record.id, (err, deletedRecord) => {
-    //   if (err) { console.error(err);  return  }
-    // })
 
-    // base(table).replace()
+    return await base(table).destroy(record.id).then(r => {return r} )
+    // await
   }
 
-  checkOff(record){
+  async checkOff(record){
     var newStatus;
     console.log("Toggleing", record.fields["Title"]);
 
@@ -71,29 +73,26 @@ class App extends React.Component {
       newStatus = "complete";
     }
 
-
     // Update Airtable
-    base(table).update( record.id, {"Status": newStatus} )
-      // .then( e => this.setState( {records: e} ) ) })
-    // console.log( record.fields.Status = newStatus )
-
-    // this.setState( {record.fields.Status: 'complete'} )
-    // console.log( record )
+    await base(table).update( record.id, {"Status": newStatus} );
   }
+
 
   async componentDidMount() {
     await this.fetchAirtable()
   }
 
   async fetchAirtable() {
+    console.log('fetching')
     const records = await base(table).select().all()
       .then( r => {return r})
-      // console.log({records})
-    this.setState({records});
+    // console.log({records})
+    await this.setState({records});
   }
 
+
   render() {
-    var {records} = this.state
+    var records = this.state.records
     return (
       <div className="App">
         <div className="App-header">
@@ -102,45 +101,55 @@ class App extends React.Component {
         </div>
 
         <div id="task-list">
+          <div id="top-bar">
+            <div className="clearfix">
+              <input className="search-bar" type="text" placeholder="Search.." />
+
+              <img  src={clipboard}
+                    alt="new task"
+                    className="clipboard"
+                    onClick={(e) =>  this.newTask(this)  } />
+              </div>
+            </div>
           <div className="task-header">
-            <div className="hdrBlk"> <h3> Task </h3> </div>
+            <div className="hdrBlk">  <h3> Task </h3> </div>
             <div className="hdrBlk">  <h3> Priority </h3> </div>
             <div className="hdrBlk">  <h3> Due Date </h3> </div>
-          </div>
+            </div>
 
 
           {records.map(record =>
             <ul  id="tasks" key={record.id}
-              style={record.fields["Status"] === "complete" ? {'backgroundColor': 'gray'} : {'backgroundColor': 'white'}}
-            >
+              style={record.fields["Status"] === "complete" ? {'backgroundColor': 'gray'} : {'backgroundColor': 'white'} }>
               <div id="title" className="task-field">
-                <input type="checkbox" id="check"
-                  onClick={(e) => this.checkOff(record, e)}
-                  defaultChecked={getChecked(record.fields["Status"])} />
+                <input  type="checkbox"   id="check"
+                        onClick={(e) => this.checkOff(record, e).then(
+                                        this.fetchAirtable(this) ) }
+                        defaultChecked={getChecked(record.fields["Status"])} />
                 { record.fields["Title"] }
-              </div>
+                </div>
 
               <div id="priority" className="task-field">
                 <div id="dot" style={getDotColor(record.fields["Priority"])} />
                 { record.fields["Priority"] }
-              </div>
+                </div>
 
               <div id="due" className="task-field">
                 { record.fields["Due Date"] }
                 <img src={trash}
                   className="trashcan"
                   alt="trash"
-                  onClick={(e) => this.deleteItem(record, e)}
-                />
-              </div>
-            </ul>
-          )}
+                  onClick={(e) => { this.deleteItem(record, e);
+                                    this.fetchAirtable(this) } }/>
+                </div>
+              </ul>
+            )}
 
 
+          </div>
         </div>
-      </div>
-    );
+      );
+    }
   }
-}
 
 export default App;

@@ -20,8 +20,9 @@ body{
 .trashcan{
   height: 15px;
   padding: 0px 5px;
-
 }
+
+
 
 .App-header {
   background-color: #222;
@@ -37,9 +38,42 @@ body{
   font-size: large;
 }
 
+.top-bar{
+  /* height: 60px; */
+}
+.clipboard{
+  height: 30px;
+  padding: 0px 5px;
+  display:inline-block;
+  width: 20%;
+  float: right;
+}
+.search-bar{
+  width: 40%;
+  height: 20px;
+  padding-left: 10px;
+  border-radius: 5px;
+  margin-left: 30px;
+  display:inline-block;
+  float: left;
+}
+.clearfix::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
 .task-header{
-  font-size: large;
+  font-size: medium;
   color: black;
+  padding: 0px 50px;
+  min-width: 80px;
+  display: flex;
+  justify-content: space-between;
+}
+.hdrBlk{
+  display:inline-block;
+  /* width: 100px; */
 }
 
 #task-list{
@@ -62,11 +96,6 @@ body{
   margin: -3px 10px;
   display: flex;
   justify-content: space-between;
-}
-
-.hdrBlk{
-  display:inline-block;
-  width: 20%;
 }
 
 .task-field{
